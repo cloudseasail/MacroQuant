@@ -1,0 +1,21 @@
+
+import matplotlib.pyplot as plt
+
+import numpy as np
+def random_color():
+    return '#%06x' % np.random.randint(0, 0xFFFFFF)
+
+def plot_twins_ax(xlabel=None,ylabel1=None,ylabel2=None,len_xticks=10,figsize=(10,6)):
+    # plt.rcParams['font.sans-serif'] = ['SimHei']
+    fig=plt.figure(figsize=figsize)
+    ax1=plt.subplot2grid((1,1),(0,0),rowspan=1,colspan=1)
+    ax1.set_ylabel(ylabel1)
+    # ax1.set_xticks(data.index[xticks])
+    plt.xticks(rotation=30)
+
+    ax2=ax1.twinx()
+    # ax2.legend(loc='upper left')
+    ax2.set_ylabel(ylabel2)
+    ax2.set_xlabel(xlabel)
+    ax2.grid(True,alpha=0.2)
+    return (ax1, ax2)
