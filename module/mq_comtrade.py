@@ -34,6 +34,10 @@ class MQ_COMTRADE():
         df = comtradeapicall.getReference('cmd:HS')
         df.to_csv(str(filepath))
         return df
+    def get_cmdcode_children(self, parent='TOTAL'):
+        cmdCodes = self.get_cmdcode()
+        return cmdCodes[cmdCodes['parent']==str(parent)]
+
     
     def _convert_cmdCode(self, cmdArr):
         if cmdArr is not None:

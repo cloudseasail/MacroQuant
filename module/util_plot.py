@@ -19,3 +19,9 @@ def plot_twins_ax(xlabel=None,ylabel1=None,ylabel2=None,len_xticks=10,figsize=(1
     ax2.set_xlabel(xlabel)
     ax2.grid(True,alpha=0.2)
     return (ax1, ax2)
+
+
+def plot_bar_line(bar, line, title=""):
+    (ax1, ax2) = plot_twins_ax('', bar.name, line.name)
+    bar.plot(kind='bar', ax=ax1)
+    line.plot(ax=ax2,legend=True, color='r', title=title)
