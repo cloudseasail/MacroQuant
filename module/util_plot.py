@@ -4,6 +4,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 def random_color():
     return '#%06x' % np.random.randint(0, 0xFFFFFF)
+def random_colorArr(N):
+    colorArr=[]
+    for i in range(N):
+        colorArr.append(random_color())
+    return colorArr
 
 def plot_twins_ax(xlabel=None,ylabel1=None,ylabel2=None,len_xticks=10,figsize=(10,6)):
     # plt.rcParams['font.sans-serif'] = ['SimHei']

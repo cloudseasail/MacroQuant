@@ -109,7 +109,7 @@ class MQ_COMTRADE():
                                     partner2Code=None,
                                     customsCode=None, motCode=None, maxRecords=10000, format_output='JSON',
                                     aggregateBy=None, breakdownMode='classic', countOnly=None, includeDesc=True)
-        length = len(df) if df is not None else 0 
+        # length = len(df) if df is not None else 0 
         # print('getFinalData, ', period,  f'total length: {length}')
         return df
     
