@@ -7,9 +7,15 @@ Macro economy analysis and trading with Quant way
   - [x] [S01E02.USA Import Trend](https://github.com/cloudseasail/MacroQuant/blob/main/analysis/S01E02_USA_Import_Trend.ipynb)
   - [x] [S01E03.USA Import Trend with categary aggLevel4](https://github.com/cloudseasail/MacroQuant/blob/main/analysis/S01E03_USA_Import_aggLevel4.ipynb)
   - [x] [S01E04.USA Import partners](https://github.com/cloudseasail/MacroQuant/blob/main/analysis/S01E04_USA_import_partner.ipynb)
+  - [ ] Global exchange rate and Federal exchange rate
   - [ ] S01E05.To be continued
-* [ ] S02.USA bond, exchage rate, inflation
-* [ ] S03.Global exchange rate and Federal exchange rate
+* [ ] S02.Portfolio Asset Allocation
+  * [ ] Macro features modeling
+  * [ ] Broad asset evaluation
+  * [ ] Multi-dimentional asset allocation
+  * [ ] Risk budgeting model backtesting   https://github.com/jcrichard/pyrb/
+  * [ ] Asset Rotation
+* [ ] S03.
 * [ ] TBD
 
 ## Trading Strategies
