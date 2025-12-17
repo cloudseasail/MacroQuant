@@ -10,8 +10,8 @@ Macro economy analysis and trading with Quant way
   - [ ] Global exchange rate and Federal exchange rate
   - [ ] S01E05.To be continued
 * [ ] S02.Portfolio Asset Allocation
-  * [ ] Macro features modeling
   * [ ] Broad asset evaluation
+  * [ ] Macro features modeling
   * [ ] Multi-dimentional asset allocation
   * [ ] Risk budgeting model backtesting   https://github.com/jcrichard/pyrb/
   * [ ] Asset Rotation
