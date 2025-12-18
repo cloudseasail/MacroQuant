@@ -16,5 +16,7 @@ Macro economy analysis and trading with Quant way
 ### Free data source
  1. UN COMTRADE DATABSE: https://comtradeplus.un.org/
  2. [National Bureak of Statistics](https://data.stats.gov.cn/)
- 2. AKShare: https://akshare.akfamily.xyz/
+ 3. AKShare: https://akshare.akfamily.xyz/
+ 4. EastMoney: https://data.eastmoney.com/
+ 5. 全球经济数据: http://www.qqjjsj.com/
 

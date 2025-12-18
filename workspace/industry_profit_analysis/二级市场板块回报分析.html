@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二级市场行业板块回报分析</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.0/dist/echarts.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .chart-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            height: 400px;
+        }
+        .chart-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>二级市场行业板块回报分析</h1>
+        <h3>benchmark: 中证500</h3>
+        <div class="chart-container">
+            <div class="chart-title">历史超额最高的10个行业</div>
+            <div id="chart1" style="width: 100%; height: calc(100% - 30px);"></div>
+        </div>
+        
+        <div class="chart-container">
+            <div class="chart-title">历史超额最低的10个行业</div>
+            <div id="chart2" style="width: 100%; height: calc(100% - 30px);"></div>
+        </div>
+        
+        <div class="chart-container">
+            <div class="chart-title">最近超额最高的10个行业</div>
+            <div id="chart3" style="width: 100%; height: calc(100% - 30px);"></div>
+        </div>
+        
+        <div class="chart-container">
+            <div class="chart-title">最近超额最低的10个行业</div>
+            <div id="chart4" style="width: 100%; height: calc(100% - 30px);"></div>
+        </div>
+    </div>
+
+    <script>
+        // 读取CSV数据并处理
+        async function loadAndProcessData() {
+            try {
+                const response = await fetch('data/二级市场板块回报率.csv');
+                const csvText = await response.text();
+                processData(csvText);
+            } catch (error) {
+                console.error('数据加载失败:', error);
+            }
+        }
+
+        // 处理CSV数据并生成图表
+        function processData(csvText) {
+            const lines = csvText.trim().split('\n');
+            const headers = lines[0].split(',');
+            const dataRows = lines.slice(1);
+            
+            // 解析数据
+            const parsedData = dataRows.map(row => {
+                const values = row.split(',');
+                const rowData = {};
+                headers.forEach((header, index) => {
+                    rowData[header] = isNaN(values[index]) ? values[index] : parseFloat(values[index]);
+                });
+                return rowData;
+            });
+            
+            // 计算每个行业的历史最高/最低超额
+            const industryHistory = {};
+            const industries = headers.filter(h => h !== 'date' && h !== 'benchmark');
+            
+            industries.forEach(industry => {
+                industryHistory[industry] = {
+                    max: Math.max(...parsedData.map(d => d[industry])),
+                    min: Math.min(...parsedData.map(d => d[industry])),
+                    last: parsedData[parsedData.length - 1][industry]
+                };
+            });
+            
+            // 获取历史最高超额的10个行业
+            const topHistoricalIndustries = Object.entries(industryHistory)
+                .sort((a, b) => b[1].max - a[1].max)
+                .slice(0, 10)
+                .map(item => item[0]);
+                
+            // 获取历史最低超额的10个行业
+            const bottomHistoricalIndustries = Object.entries(industryHistory)
+                .sort((a, b) => a[1].min - b[1].min)
+                .slice(0, 10)
+                .map(item => item[0]);
+                
+            // 获取最新一天最高超额的10个行业
+            const topLastIndustries = Object.entries(industryHistory)
+                .sort((a, b) => b[1].last - a[1].last)
+                .slice(0, 10)
+                .map(item => item[0]);
+                
+            // 获取最新一天最低超额的10个行业
+            const bottomLastIndustries = Object.entries(industryHistory)
+                .sort((a, b) => a[1].last - b[1].last)
+                .slice(0, 10)
+                .map(item => item[0]);
+            
+            // 提取日期数据
+            const dates = parsedData.map(d => d.date);
+            
+            // 创建四个图表
+            createLineChart('chart1', parsedData, topHistoricalIndustries, dates, '历史超额最高的10个行业');
+            createLineChart('chart2', parsedData, bottomHistoricalIndustries, dates, '历史超额最低的10个行业');
+            createLineChart('chart3', parsedData, topLastIndustries, dates, '最近超额最高的10个行业');
+            createLineChart('chart4', parsedData, bottomLastIndustries, dates, '最近超额最低的10个行业');
+        }
+        
+        // 创建折线图
+        function createLineChart(containerId, data, industries, dates, title) {
+            const chartDom = document.getElementById(containerId);
+            const myChart = echarts.init(chartDom);
+            
+            // 为每个行业准备数据系列
+            const series = industries.map((industry, index) => {
+                // 为不同行业设置不同的颜色
+                const colors = ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', 
+                               '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc', '#2ab7ca'];
+                
+                return {
+                    name: industry,
+                    type: 'line',
+                    data: data.map(d => d[industry]),
+                    smooth: true,
+                    lineStyle: {
+                        color: colors[index % colors.length],
+                        width: 1.5
+                    },
+                    itemStyle: {
+                        color: colors[index % colors.length]
+                    }
+                };
+            });
+            
+            // 添加基准线
+            series.push({
+                name: 'benchmark',
+                type: 'line',
+                data: data.map(d => d.benchmark),
+                smooth: true,
+                lineStyle: {
+                    color: '#ff0000',
+                    width: 2
+                },
+                itemStyle: {
+                    color: '#ff0000'
+                },
+                z: 10 // 确保基准线在最上层
+            });
+            
+            const option = {
+                tooltip: {
+                    trigger: 'axis',
+                    formatter: function(params) {
+                        let tooltipText = params[0].name + '<br/>';
+                        params.forEach(param => {
+                            tooltipText += param.marker + param.seriesName + ': ' + param.value.toFixed(3) + '<br/>';
+                        });
+                        return tooltipText;
+                    },
+                    backgroundColor: 'rgba(255,255,255,0.9)',
+                    borderColor: '#ccc',
+                    borderWidth: 1,
+                    textStyle: {
+                        color: '#333'
+                    }
+                },
+                legend: {
+                    data: [...industries, 'benchmark'],
+                    type: 'scroll',
+                    orient: 'vertical',
+                    right: 10,
+                    top: 20,
+                    bottom: 20
+                },
+                xAxis: {
+                    type: 'category',
+                    data: dates
+                },
+                yAxis: {
+                    type: 'value',
+                    scale: true, // 启用缩放
+                    axisLabel: {
+                        formatter: function(value) {
+                            return value.toFixed(3);
+                        }
+                    },
+                    splitLine: {  // 添加网格线
+                        show: true,
+                        lineStyle: {
+                            type: 'dashed',
+                            opacity: 0.3
+                        }
+                    }
+                },
+                series: series.map(serie => ({
+                    ...serie,
+                    lineStyle: {
+                        width: 1.5  // 统一设置线条粗细
+                    },
+                    showSymbol: false  // 隐藏数据点以提高性能和美观度
+                })),
+                dataZoom: [
+                    {
+                        type: 'inside',
+                        start: 0,
+                        end: 100
+                    },
+                    {
+                        start: 0,
+                        end: 100
+                    }
+                ]
+            };
+            
+            myChart.setOption(option);
+            
+            // 监听窗口大小变化以重新调整图表大小
+            window.addEventListener('resize', () => {
+                myChart.resize();
+            });
+        }
+        
+        // 页面加载完成后开始处理数据
+        document.addEventListener('DOMContentLoaded', loadAndProcessData);
+    </script>
+</body>
+</html>
